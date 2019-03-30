@@ -28,7 +28,7 @@ public class Attachment implements Serializable {
      * 附件编号
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long attachId;
 
     /**

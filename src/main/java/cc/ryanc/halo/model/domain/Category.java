@@ -28,7 +28,7 @@ public class Category implements Serializable {
      * 分类编号
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cateId;
 
     /**

@@ -33,7 +33,7 @@ public class Comment implements Serializable {
      * 评论id 自增
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
     /**

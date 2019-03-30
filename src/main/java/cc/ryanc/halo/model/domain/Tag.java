@@ -28,7 +28,7 @@ public class Tag implements Serializable {
      * 标签编号
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
 
     /**

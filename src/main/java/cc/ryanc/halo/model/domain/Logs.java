@@ -28,7 +28,7 @@ public class Logs implements Serializable {
      * id
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long logId;
 
     /**

@@ -32,7 +32,7 @@ public class Post implements Serializable {
      * 文章编号
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
     /**

@@ -2,10 +2,7 @@ package cc.ryanc.halo.model.domain;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
@@ -28,7 +25,7 @@ public class Link implements Serializable {
      * 友情链接编号
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long linkId;
 
     /**
