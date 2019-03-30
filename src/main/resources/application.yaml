@@ -10,6 +10,8 @@ server:
     session:
       timeout: 86400s
 spring:
+  devtools:
+    add-properties: false
   output:
     ansi:
       enabled: always
@@ -17,23 +19,23 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
 
     # H2database 配置
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:~/halo/halo
-    username: admin
-    password: 123456
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:file:~/halo/halo
+#    username: admin
+#    password: 123456
 
     #MySql配置
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/halodb?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
-#    username: root
-#    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/halodb?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
 
   h2:
     console:
       settings:
-        web-allow-others: true
+        web-allow-others: false
       path: /h2-console
-      enabled: true
+      enabled: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -58,5 +60,12 @@ spring:
   # 多语言资源文件路径
   messages:
     basename: i18n/messages
+
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:ehcache.xml
 logging:
+  level:
+    cc.ryanc.halo: INFO
   file: ./logs/log.log

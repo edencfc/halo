@@ -1,20 +1,21 @@
 package cc.ryanc.halo.config;
 
-import cc.ryanc.halo.filter.CorsFilter;
+import cc.ryanc.halo.config.properties.HaloProperties;
 import cc.ryanc.halo.web.interceptor.ApiInterceptor;
 import cc.ryanc.halo.web.interceptor.InstallInterceptor;
 import cc.ryanc.halo.web.interceptor.LocaleInterceptor;
 import cc.ryanc.halo.web.interceptor.LoginInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.Ordered;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
@@ -47,6 +48,9 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
     @Autowired
     private LocaleInterceptor localeInterceptor;
 
+    @Autowired
+    private HaloProperties haloProperties;
+
     /**
      * 注册拦截器
      *
@@ -60,6 +64,10 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/backup/**")
                 .excludePathPatterns("/admin/login")
                 .excludePathPatterns("/admin/getLogin")
+                .excludePathPatterns("/admin/findPassword")
+                .excludePathPatterns("/admin/sendResetPasswordEmail")
+                .excludePathPatterns("/admin/toResetPassword")
+                .excludePathPatterns("/admin/resetPassword")
                 .excludePathPatterns("/static/**");
         registry.addInterceptor(installInterceptor)
                 .addPathPatterns("/**")
@@ -93,42 +101,14 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/halo-backend/images/favicon.ico");
         registry.addResourceHandler("/backup/**")
                 .addResourceLocations("file:///" + System.getProperties().getProperty("user.home") + "/halo/backup/");
-    }
 
-//    /**
-//     * 跨域
-//     *
-//     * @param registry registry
-//     */
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/api/**")
-//                .allowedHeaders("*")
-//                .allowedOrigins("*")
-//                .allowedMethods("GET", "POST")
-//                .exposedHeaders("access-control-allow-headers",
-//                        "access-control-allow-methods",
-//                        "access-control-allow-origin",
-//                        "access-control-max-age",
-//                        "X-Frame-Options",
-//                        "token")
-//                .allowCredentials(false).maxAge(3600);
-//    }
-
-    /**
-     * Creates a CorsFilter.
-     *
-     * @return Cors filter registration bean
-     */
-    @Bean
-    FilterRegistrationBean<CorsFilter> corsFilter() {
-        FilterRegistrationBean<CorsFilter> corsFilter = new FilterRegistrationBean<>();
-
-        corsFilter.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        corsFilter.setFilter(new CorsFilter());
-        corsFilter.addUrlPatterns("/api/*");
-
-        return corsFilter;
+        if (!haloProperties.getDocDisabled()) {
+            // If doc is enable
+            registry.addResourceHandler("swagger-ui.html")
+                    .addResourceLocations("classpath:/META-INF/resources/");
+            registry.addResourceHandler("/webjars/**")
+                    .addResourceLocations("classpath:/META-INF/resources/webjars/");
+        }
     }
 
     /**

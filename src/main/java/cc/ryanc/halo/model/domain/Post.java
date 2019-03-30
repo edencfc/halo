@@ -1,8 +1,12 @@
 package cc.ryanc.halo.model.domain;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -21,6 +25,7 @@ import java.util.List;
  * @date : 2017/11/14
  */
 @Data
+@ToString
 @Entity
 @Table(name = "halo_post")
 @EntityListeners(AuditingEntityListener.class)
@@ -51,6 +56,7 @@ public class Post implements Serializable {
      * 文章类型
      * post  文章
      * page  页面
+     * journal 日志
      */
     private String postType = "post";
 
@@ -64,6 +70,7 @@ public class Post implements Serializable {
      * 文章内容 html格式
      */
     @Lob
+    @JsonIgnore
     private String postContent;
 
     /**
@@ -109,7 +116,6 @@ public class Post implements Serializable {
     /**
      * 发表日期
      */
-    @CreatedDate
     private Date postDate;
 
     /**
@@ -145,6 +151,16 @@ public class Post implements Serializable {
      */
     private String customTpl;
 
+    /**
+     * Post priority (default is 0)
+     */
+    private Integer postPriority;
+
+    /**
+     * 发布来源 (default is admin)
+     */
+    private String postSource;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public Date getPostDate() {
         return postDate;
@@ -153,5 +169,28 @@ public class Post implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public Date getPostUpdate() {
         return postUpdate;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        DateTime now = DateUtil.date();
+
+        if (postDate == null) {
+            postDate = now;
+        }
+
+        if (postUpdate == null) {
+            postUpdate = now;
+        }
+
+        if (postPriority == null) {
+            postPriority = 0;
+        }
+
+        if (postSource == null) {
+            postSource = "admin";
+        }
+
+        postId = null;
     }
 }

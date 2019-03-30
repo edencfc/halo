@@ -1,6 +1,7 @@
 package cc.ryanc.halo.model.domain;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.io.Serializable;
  * @date : 2018/2/26
  */
 @Data
+@ToString
 @Entity
 @Table(name = "halo_gallery")
 public class Gallery implements Serializable {
